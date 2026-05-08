@@ -13,7 +13,7 @@ An innovative web-based system designed to digitally register, track, and manage
 ## 🚀 Features
 
 - 📝 Easy complaint submission form  
-- 📍 Location-based complaint tagging (if implemented)  
+- 📍 Location-based complaint tagging  
 - 📊 Complaint status tracking (Pending / In Progress / Resolved)  
 - 🔔 Notification system for updates  
 - 👤 User-friendly interface  
@@ -24,12 +24,8 @@ An innovative web-based system designed to digitally register, track, and manage
 
 ## 🛠️ Tech Stack
 
-- Frontend: HTML, CSS, JavaScript *(or your framework if used)*  
-- Backend: Python / Flask *(or Node.js if applicable)*  
-- Database: SQLite / MongoDB *(update as needed)*  
+- Frontend: HTML, CSS, JavaScript  
+- Backend: Python / Flask 
 - APIs: RESTful services  
 - Version Control: Git & GitHub  
 
----
-
-## 📂 Project Structure
