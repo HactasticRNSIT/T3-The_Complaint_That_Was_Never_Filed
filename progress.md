@@ -6,12 +6,12 @@
 
 ## Hour 2: Harassment Detection Model (Initial Build)
 - Define model architecture.
-- Setup data preprocessing pipelines.
+- Set up data preprocessing pipelines.
 - Develop the core detection algorithm.
 
 ## Hour 3: Emergency SOS System
 - Implement trigger mechanisms for SOS alerts.
-- Integrate notification services (SMS/Email/Push).
+- Integrate notification services (WhatsApp messages).
 
 ## Hour 4: Phase 1 Evaluation
 - Review core model logic and SOS functionality.
