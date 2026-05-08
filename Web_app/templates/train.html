@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeWatch — Train Model</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#080b10;--surface:#0d1117;--border:#1c2333;--accent:#00d4ff;--danger:#ff3b5c;--warn:#ffb700;--safe:#00e676;--text:#e2e8f0;--muted:#64748b; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;}
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:1000;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;border-bottom:1px solid var(--border);background:rgba(8,11,16,0.95);position:sticky;top:0;z-index:100;}
+  .logo{display:flex;align-items:center;gap:12px;font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--accent);text-decoration:none;}
+  .logo-dot{width:10px;height:10px;background:var(--danger);border-radius:50%;animation:pulse 1.5s infinite;box-shadow:0 0 8px var(--danger);}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  .nav-links{display:flex;gap:8px;}
+  .nav-links a{padding:8px 18px;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);text-decoration:none;border:1px solid transparent;border-radius:4px;transition:all 0.2s;}
+  .nav-links a:hover,.nav-links a.active{color:var(--accent);border-color:var(--accent);background:rgba(0,212,255,0.05);}
+  .page-body{max-width:860px;margin:0 auto;padding:48px 40px;}
+  h1{font-size:32px;font-weight:800;margin-bottom:8px;}
+  .subtitle{color:var(--muted);font-family:'Space Mono',monospace;font-size:13px;margin-bottom:40px;}
+
+  .info-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:28px;margin-bottom:28px;}
+  .info-box h3{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-family:'Space Mono',monospace;color:var(--accent);}
+  .folder-row{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+  .folder-card{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center;}
+  .folder-icon{font-size:36px;margin-bottom:10px;}
+  .folder-name{font-family:'Space Mono',monospace;font-size:12px;color:var(--accent);margin-bottom:4px;}
+  .folder-desc{font-size:12px;color:var(--muted);}
+
+  .code-block{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;font-family:'Space Mono',monospace;font-size:12px;color:var(--accent);margin:12px 0;overflow-x:auto;white-space:pre;}
+
+  .train-btn{padding:16px 40px;background:var(--accent);color:#000;font-family:'Space Mono',monospace;font-size:14px;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:10px;}
+  .train-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,212,255,0.3);}
+  .train-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+  .progress-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:28px;margin-top:24px;display:none;}
+  .progress-wrap.visible{display:block;}
+  .prog-label{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:12px;}
+  .prog-track{background:var(--border);border-radius:4px;height:6px;overflow:hidden;margin-bottom:16px;}
+  .prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),#0088ff);transition:width 0.5s;box-shadow:0 0 8px rgba(0,212,255,0.5);}
+  .train-log{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;font-family:'Space Mono',monospace;font-size:12px;color:var(--safe);height:160px;overflow-y:auto;}
+  
+  .result-badge{display:inline-flex;align-items:center;gap:10px;padding:16px 24px;border-radius:8px;font-family:'Space Mono',monospace;font-size:14px;font-weight:700;margin-top:16px;}
+  .result-badge.success{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);color:var(--safe);}
+  .result-badge.error{background:rgba(255,59,92,0.1);border:1px solid rgba(255,59,92,0.3);color:var(--danger);}
+
+  .step-list{list-style:none;counter-reset:steps;}
+  .step-list li{counter-increment:steps;padding:16px 0;border-bottom:1px solid var(--border);display:flex;gap:16px;align-items:flex-start;}
+  .step-list li:last-child{border-bottom:none;}
+  .step-num{background:var(--accent);color:#000;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex-shrink:0;}
+  .step-content h4{font-size:14px;font-weight:700;margin-bottom:4px;}
+  .step-content p{font-size:13px;color:var(--muted);}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/"><span class="logo-dot"></span>SafeWatch</a>
+  <div class="nav-links">
+    <a href="/">Analyze</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/incidents">Incidents</a>
+    <a href="/train" class="active">Train Model</a>
+  </div>
+</nav>
+
+<div class="page-body">
+  <h1>Train Custom Model</h1>
+  <p class="subtitle">Train on your own dataset to improve detection accuracy</p>
+
+  <div class="info-box">
+    <h3>📁 Dataset Structure</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Place your video files in these folders inside the project directory:</p>
+    <div class="folder-row">
+      <div class="folder-card">
+        <div class="folder-icon">✅</div>
+        <div class="folder-name">dataset/normal/</div>
+        <div class="folder-desc">Normal footage MP4 files (no harassment)</div>
+      </div>
+      <div class="folder-card">
+        <div class="folder-icon">🚨</div>
+        <div class="folder-name">dataset/harassment/</div>
+        <div class="folder-desc">Harassment/aggressive incident MP4 files</div>
+      </div>
+    </div>
+    <div class="code-block">harassment_detection/
+├── dataset/
+│   ├── normal/        ← Add your normal .mp4 files here
+│   │   ├── clip1.mp4
+│   │   └── clip2.mp4
+│   └── harassment/    ← Add harassment .mp4 files here
+│       ├── incident1.mp4
+│       └── incident2.mp4
+└── app.py</div>
+  </div>
+
+  <div class="info-box">
+    <h3>⚙️ How Training Works</h3>
+    <ul class="step-list">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Feature Extraction</h4>
+          <p>For each video, optical flow magnitude is computed across frames to capture motion patterns — erratic motion, sudden bursts, sustained pressure movements.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Statistical Profiling</h4>
+          <p>6 motion features per video: mean, std, max magnitude, std of flow, 75th percentile, 90th percentile. These create a behavioral fingerprint.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Threshold Classifier</h4>
+          <p>A simple but effective threshold-based classifier is trained — no heavy ML libraries needed. Works fully offline.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Model Saved</h4>
+          <p>Model is saved as <code style="color:var(--accent)">models/model.json</code>. Accuracy is reported after training.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <button class="train-btn" id="trainBtn" onclick="startTraining()">
+    🧠 Start Training
+  </button>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="prog-label">
+      <span id="trainLabel">Preparing...</span>
+      <span id="trainPct">0%</span>
+    </div>
+    <div class="prog-track">
+      <div class="prog-fill" id="progFill" style="width:0%"></div>
+    </div>
+    <div class="train-log" id="trainLog"></div>
+    <div id="trainResult"></div>
+  </div>
+</div>
+
+<script>
+let pollInterval = null;
+
+async function startTraining() {
+  document.getElementById('trainBtn').disabled = true;
+  document.getElementById('progressWrap').classList.add('visible');
+  document.getElementById('trainLog').textContent = '';
+  document.getElementById('trainResult').innerHTML = '';
+  document.getElementById('progFill').style.width = '3%';
+  document.getElementById('trainPct').textContent = '3%';
+  document.getElementById('trainLabel').textContent = 'Initializing...';
+
+  await fetch('/api/train', {method: 'POST'});
+  
+  pollInterval = setInterval(async () => {
+    const r = await fetch('/api/train_status');
+    const s = await r.json();
+    
+    document.getElementById('progFill').style.width = (s.progress || 0) + '%';
+    document.getElementById('trainPct').textContent = (s.progress || 0) + '%';
+    document.getElementById('trainLabel').textContent = s.status || 'Processing...';
+    
+    const log = document.getElementById('trainLog');
+    log.textContent += (s.status || '') + '\n';
+    log.scrollTop = log.scrollHeight;
+    
+    if (s.done) {
+      clearInterval(pollInterval);
+      document.getElementById('trainBtn').disabled = false;
+      
+      if (s.accuracy) {
+        document.getElementById('trainResult').innerHTML = `
+          <div class="result-badge success">
+            ✅ Training Complete — Accuracy: ${s.accuracy}%
+          </div>`;
+      } else if ((s.status||'').toLowerCase().includes('error') || (s.status||'').toLowerCase().includes('need')) {
+        document.getElementById('trainResult').innerHTML = `
+          <div class="result-badge error">⚠️ ${s.status}</div>`;
+      }
+    }
+  }, 1200);
+}
+</script>
+</body>
+</html>
