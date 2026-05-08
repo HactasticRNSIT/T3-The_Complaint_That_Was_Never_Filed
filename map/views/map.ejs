@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bangalore Heatmap</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: sans-serif; }
+    #map { width: 100%; height: 100vh; }
+  </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <button id="reportBtn" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; padding: 15px 30px; background: #ff4757; color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+      + Report a Complaint
+  </button>
+
+  <div id="formModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.3); width: 300px;">
+    <form action="/report-incident" method="POST">
+        <h3 style="margin-bottom: 15px;">Submit a Safety Report</h3>
+        
+        <input type="text" name="incidentType" placeholder="What happened?" required style="display:block; width:100%; margin-bottom:10px; padding: 8px;">
+        
+        <input type="text" name="latitude" id="latInput" placeholder="Latitude" readonly required style="display:block; width:100%; margin-bottom:10px; padding: 8px; background: #f0f0f0; border: 1px solid #ccc; cursor: not-allowed;">
+        
+        <input type="text" name="longitude" id="lngInput" placeholder="Longitude" readonly required style="display:block; width:100%; margin-bottom:10px; padding: 8px; background: #f0f0f0; border: 1px solid #ccc; cursor: not-allowed;">
+        
+        <button type="submit" style="width: 100%; background: #2ed573; color: white; border: none; padding: 10px; cursor: pointer; font-weight: bold;">Submit</button>
+        <button type="button" id="closeBtn" style="margin-top: 5px; width: 100%; background: #eee; border: none; padding: 10px; cursor: pointer;">Cancel</button>
+    </form>
+</div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <script>
+    // INITIALIZE MAP
+    const map = L.map('map').setView([12.9716, 77.5946], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    
+    // RENDER EXISTING DATA
+    const coords = <%- JSON.stringify(coords) %>;
+
+    // 1. Add the Color Logic Function here
+    function getColor(type) {
+        // We use .label because that's what you named the incident text in app.js
+        const text = type ? type.toLowerCase() : ""; 
+        if (text.includes('harassment') || text.includes('theft') || text.includes('crime')) {
+            return '#8B0000'; // Dark Red
+        } else if (text.includes('light') || text.includes('isolated') || text.includes('dark')) {
+            return '#FFA500'; // Orange/Yellow
+        }
+        return '#ff4757'; // Default Red
+    }
+
+    // 2. Use the function inside the loop
+    coords.forEach(point => {
+      const pointColor = getColor(point.label);
+      
+      L.circle([point.lat, point.lng], {
+        color: pointColor, 
+        fillColor: pointColor, 
+        fillOpacity: 0.5, 
+        radius: 500
+      })
+      .addTo(map)
+      .bindPopup(`<b>${point.label}</b>`);
+    });
+
+    // 3. ADD THE BUTTON LOGIC HERE
+    const btn = document.getElementById('reportBtn');
+    const modal = document.getElementById('formModal');
+    const close = document.getElementById('closeBtn');
+
+    // Show modal when clicking the button
+    btn.onclick = () => modal.style.display = 'block';
+    
+    // Hide modal when clicking cancel
+    close.onclick = () => modal.style.display = 'none';
+
+    // MAGIC FEATURE: Click the map to fill the form!
+    let tempMarker; // Variable to hold our temporary dot
+
+    map.on('click', function(e) {
+    modal.style.display = 'block';
+    
+    // 1. Fill the inputs
+    document.getElementById('latInput').value = e.latlng.lat.toFixed(6);
+    document.getElementById('lngInput').value = e.latlng.lng.toFixed(6);
+
+    // 2. Add or Move the temporary marker so the user sees where they clicked
+    if (tempMarker) {
+        tempMarker.setLatLng(e.latlng);
+    } else {
+        tempMarker = L.marker(e.latlng, {draggable: true}).addTo(map);
+    }
+    });
+  </script>
+</body>
+</html>

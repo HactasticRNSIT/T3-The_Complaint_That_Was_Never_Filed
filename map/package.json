@@ -1,0 +1,24 @@
+{
+  "name": "t3-the_complaint_that_was_never_filed",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HactasticRNSIT/T3-The_Complaint_That_Was_Never_Filed.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HactasticRNSIT/T3-The_Complaint_That_Was_Never_Filed/issues"
+  },
+  "homepage": "https://github.com/HactasticRNSIT/T3-The_Complaint_That_Was_Never_Filed#readme",
+  "description": "",
+  "dependencies": {
+    "ejs": "^5.0.2",
+    "express": "^5.2.1"
+  }
+}
