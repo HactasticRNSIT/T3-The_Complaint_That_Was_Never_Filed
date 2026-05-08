@@ -17,17 +17,22 @@ let bangaloreCoords = [
   { lat: 12.9784, lng: 77.6408, label: 'Indiranagar' },
 ];
 
-// 1. THE GET ROUTE: Shows the map with all current dots
+// 1. THE GET ROUTE
 app.get('/map', (req, res) => {
   res.render('map', { coords: bangaloreCoords });
 });
 
-// 2. THE POST ROUTE: Catches the new report and adds it to the list
+// 2. THE NEW & IMPROVED POST ROUTE 
 app.post('/report-incident', (req, res) => {
+    const { latitude, longitude, incidentType, otherDetails } = req.body;
+    
+    // Logic: If they chose "Other"
+    const finalLabel = (incidentType === 'Other' && otherDetails) ? otherDetails : incidentType;
+
     const newIncident = {
-        lat: parseFloat(req.body.latitude),
-        lng: parseFloat(req.body.longitude),
-        label: req.body.incidentType 
+        lat: parseFloat(latitude),
+        lng: parseFloat(longitude),
+        label: finalLabel 
     };
 
     bangaloreCoords.push(newIncident); // Add to our list
