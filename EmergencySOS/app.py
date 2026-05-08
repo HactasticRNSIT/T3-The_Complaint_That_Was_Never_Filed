@@ -10,7 +10,7 @@ def send_sos():
     data = request.json
     location = data["location"]
 
-    phone = "918310022396"  # must be exact format
+    phone = "91XXXXXXXXXX"  # must be exact format
 
     message = quote(f"🚨 EMERGENCY ALERT! Location: {location}")
 
