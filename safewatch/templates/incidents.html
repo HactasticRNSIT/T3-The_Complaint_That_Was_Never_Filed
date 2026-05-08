@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeWatch — Incidents</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080b10; --surface: #0d1117; --border: #1c2333;
+    --accent: #00d4ff; --danger: #ff3b5c; --warn: #ffb700;
+    --safe: #00e676; --text: #e2e8f0; --muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+    pointer-events: none; z-index: 1000;
+  }
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 40px; border-bottom: 1px solid var(--border);
+    background: rgba(8,11,16,0.95); position: sticky; top: 0; z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; font-family: 'Space Mono', monospace; font-size: 18px; font-weight: 700; color: var(--accent); text-decoration: none; }
+  .logo-dot { width: 10px; height: 10px; background: var(--danger); border-radius: 50%; animation: pulse 1.5s infinite; box-shadow: 0 0 8px var(--danger); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .nav-links { display: flex; gap: 8px; }
+  .nav-links a { padding: 8px 18px; font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); text-decoration: none; border: 1px solid transparent; border-radius: 4px; transition: all 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); border-color: var(--accent); background: rgba(0,212,255,0.05); }
+
+  .page-header {
+    padding: 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .page-header h1 { font-size: 32px; font-weight: 800; }
+
+  .toolbar {
+    padding: 20px 40px;
+    display: flex; gap: 12px; align-items: center;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 8px 16px;
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--border); border-radius: 4px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover { color: var(--accent); border-color: var(--accent); background: rgba(0,212,255,0.05); }
+  .filter-btn.danger.active { color: var(--danger); border-color: var(--danger); background: rgba(255,59,92,0.05); }
+  .search-box {
+    flex: 1; min-width: 200px;
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); padding: 8px 16px;
+    font-family: 'Space Mono', monospace; font-size: 12px;
+    border-radius: 4px; outline: none;
+  }
+  .search-box:focus { border-color: var(--accent); }
+  .add-btn {
+    padding: 10px 20px;
+    background: var(--accent); color: #000;
+    font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700;
+    border: none; border-radius: 4px; cursor: pointer;
+    margin-left: auto;
+  }
+
+  .incidents-table { padding: 0 40px 80px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  thead th {
+    padding: 12px 16px;
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    color: var(--muted); text-align: left; letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
+  tbody tr:hover { background: rgba(0,212,255,0.03); }
+  td { padding: 16px; font-size: 13px; }
+  td.mono { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+
+  .sev-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px;
+    font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .sev-high { background: rgba(255,59,92,0.15); color: var(--danger); }
+  .sev-medium { background: rgba(255,183,0,0.15); color: var(--warn); }
+  .sev-low { background: rgba(0,230,118,0.15); color: var(--safe); }
+
+  .status-pill {
+    display: inline-block;
+    padding: 3px 10px; border-radius: 3px;
+    font-family: 'Space Mono', monospace; font-size: 10px;
+  }
+  .status-open { background: rgba(255,59,92,0.15); color: var(--danger); }
+  .status-resolved { background: rgba(0,230,118,0.15); color: var(--safe); }
+  .status-investigating { background: rgba(255,183,0,0.15); color: var(--warn); }
+
+  .source-ai { color: var(--accent); }
+  .source-manual { color: var(--muted); }
+
+  .conf-mini {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Space Mono', monospace; font-size: 11px;
+  }
+  .conf-track-mini { width: 60px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .conf-fill-mini { height: 100%; border-radius: 2px; background: var(--accent); }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 500; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 32px; width: 500px; max-width: 90vw;
+  }
+  .modal h2 { font-size: 20px; margin-bottom: 20px; }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.5px; }
+  .field input, .field select, .field textarea {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); padding: 10px 14px;
+    font-family: 'Space Mono', monospace; font-size: 12px;
+    border-radius: 4px; outline: none; resize: vertical;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
+  .modal-btns { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+  .btn-cancel { padding: 10px 20px; background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 12px; cursor: pointer; }
+  .btn-submit { padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+  .empty-state { text-align: center; padding: 80px 20px; color: var(--muted); font-family: 'Space Mono', monospace; }
+  .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+
+  .export-btn { padding: 8px 16px; background: transparent; color: var(--safe); border: 1px solid rgba(0,230,118,0.3); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 11px; cursor: pointer; }
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/"><span class="logo-dot"></span>SafeWatch</a>
+  <div class="nav-links">
+    <a href="/">Analyze</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/incidents" class="active">Incidents</a>
+    <a href="/sos" style="color:#ff3b5c;border-color:rgba(255,59,92,0.4);background:rgba(255,59,92,0.05);">🆘 SOS</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div>
+    <h1>Incident Registry</h1>
+  </div>
+  <button class="export-btn" onclick="exportCSV()">⬇ Export CSV</button>
+</div>
+
+<div class="toolbar">
+  <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+  <button class="filter-btn danger" onclick="setFilter('open', this)">Open</button>
+  <button class="filter-btn" onclick="setFilter('ai', this)">AI Detected</button>
+  <button class="filter-btn" onclick="setFilter('high', this)">High Severity</button>
+  <input type="text" class="search-box" id="searchBox" placeholder="Search incidents..." oninput="renderTable()">
+  <button class="add-btn" onclick="openModal()">+ Manual Report</button>
+</div>
+
+<div class="incidents-table">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>TIMESTAMP</th>
+        <th>TYPE</th>
+        <th>LOCATION</th>
+        <th>SEVERITY</th>
+        <th>CONFIDENCE</th>
+        <th>STATUS</th>
+        <th>SOURCE</th>
+        <th>ACTION</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <div class="empty-state" id="emptyState" style="display:none">
+    <div class="icon">📭</div>
+    <div>No incidents match the current filter</div>
+  </div>
+</div>
+
+<!-- Manual Report Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2>File Manual Report</h2>
+    <div class="field">
+      <label>INCIDENT TYPE</label>
+      <input type="text" id="incType" placeholder="e.g. Verbal Harassment, Physical Threat">
+    </div>
+    <div class="field">
+      <label>LOCATION / CAMERA</label>
+      <input type="text" id="incLocation" placeholder="e.g. Entrance Gate, Platform B">
+    </div>
+    <div class="field">
+      <label>DESCRIPTION</label>
+      <textarea id="incDesc" rows="3" placeholder="Describe what happened..."></textarea>
+    </div>
+    <div class="field">
+      <label>SEVERITY</label>
+      <select id="incSeverity">
+        <option value="high">High</option>
+        <option value="medium" selected>Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-submit" onclick="submitReport()">Submit Report</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let allIncidents = [];
+let currentFilter = 'all';
+
+async function loadIncidents() {
+  const r = await fetch('/api/incidents');
+  allIncidents = await r.json();
+  renderTable();
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function renderTable() {
+  const q = document.getElementById('searchBox').value.toLowerCase();
+  let data = [...allIncidents].reverse();
+
+  if (currentFilter === 'open') data = data.filter(i => i.status === 'Open');
+  else if (currentFilter === 'ai') data = data.filter(i => i.source === 'ai');
+  else if (currentFilter === 'high') data = data.filter(i => i.severity === 'high');
+
+  if (q) data = data.filter(i =>
+    (i.type||'').toLowerCase().includes(q) ||
+    (i.location||'').toLowerCase().includes(q) ||
+    (i.description||'').toLowerCase().includes(q) ||
+    (i.id||'').toLowerCase().includes(q)
+  );
+
+  const tbody = document.getElementById('tableBody');
+  const empty = document.getElementById('emptyState');
+
+  if (data.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = data.map(inc => {
+    const sevClass = `sev-${inc.severity || 'medium'}`;
+    const statusClass = `status-${(inc.status||'open').toLowerCase().replace(' ','-')}`;
+    const conf = inc.confidence ? `<div class="conf-mini">${Math.round(inc.confidence*100)}%<div class="conf-track-mini"><div class="conf-fill-mini" style="width:${inc.confidence*100}%"></div></div></div>` : '—';
+    return `<tr>
+      <td class="mono">${inc.id}</td>
+      <td class="mono">${new Date(inc.timestamp).toLocaleString()}</td>
+      <td>${inc.type}</td>
+      <td>${inc.location}</td>
+      <td><span class="sev-pill ${sevClass}">${(inc.severity||'').toUpperCase()}</span></td>
+      <td>${conf}</td>
+      <td><span class="status-pill ${statusClass}">${inc.status}</span></td>
+      <td class="${inc.source === 'ai' ? 'source-ai' : 'source-manual'} mono">${inc.source === 'ai' ? '🤖 AI' : '👤 Manual'}</td>
+      <td>
+        <select onchange="updateStatus('${inc.id}', this.value)" style="background:var(--bg);color:var(--text);border:1px solid var(--border);padding:4px 8px;font-family:'Space Mono',monospace;font-size:10px;border-radius:3px">
+          <option ${inc.status==='Open'?'selected':''}>Open</option>
+          <option ${inc.status==='Investigating'?'selected':''}>Investigating</option>
+          <option ${inc.status==='Resolved'?'selected':''}>Resolved</option>
+        </select>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function updateStatus(id, status) {
+  await fetch(`/api/incidents/${id}/status`, {
+    method: 'PUT',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({status})
+  });
+  loadIncidents();
+}
+
+function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+async function submitReport() {
+  const data = {
+    type: document.getElementById('incType').value || 'Manual Report',
+    location: document.getElementById('incLocation').value || 'Unknown',
+    description: document.getElementById('incDesc').value,
+    severity: document.getElementById('incSeverity').value,
+    source: 'manual'
+  };
+  await fetch('/api/incidents', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+  closeModal();
+  loadIncidents();
+}
+
+function exportCSV() {
+  const cols = ['id','timestamp','type','location','severity','status','source','confidence','description'];
+  const rows = [cols.join(',')];
+  allIncidents.forEach(i => {
+    rows.push(cols.map(c => `"${(i[c]||'').toString().replace(/"/g,'""')}"`).join(','));
+  });
+  const blob = new Blob([rows.join('\n')], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `incidents_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+loadIncidents();
+setInterval(loadIncidents, 10000);
+</script>
+</body>
+</html>

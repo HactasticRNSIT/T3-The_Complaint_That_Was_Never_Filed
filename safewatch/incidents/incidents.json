@@ -1,0 +1,359 @@
+[
+  {
+    "id": "INC-2026042412105400",
+    "timestamp": "2026-04-24T12:10:54.545885",
+    "type": "AI: Harassment Detected",
+    "location": "Main Entrance CCTV",
+    "description": "Subject cornered against wall by 2 individuals. High motion variance score.",
+    "severity": "high",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.737,
+    "video_file": "footage_20260424_121054.mp4",
+    "evidence_frames": [
+      "00:22",
+      "00:51",
+      "00:21"
+    ]
+  },
+  {
+    "id": "INC-2026042507565402",
+    "timestamp": "2026-04-25T07:56:54.545885",
+    "type": "AI: Suspicious Activity",
+    "location": "Stairwell North",
+    "description": "AI detected repeated approach-retreat-approach pattern typical of intimidation.",
+    "severity": "medium",
+    "status": "Resolved",
+    "source": "ai",
+    "confidence": 0.609,
+    "video_file": "footage_20260425_075654.mp4",
+    "evidence_frames": [
+      "00:49"
+    ]
+  },
+  {
+    "id": "INC-2026042508535404",
+    "timestamp": "2026-04-25T08:53:54.545885",
+    "type": "Stalking/Following",
+    "location": "Main Entrance CCTV",
+    "description": "Subject cornered against wall by 2 individuals. High motion variance score.",
+    "severity": "medium",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.59,
+    "video_file": "footage_20260425_085354.mp4",
+    "evidence_frames": [
+      "00:49",
+      "00:37"
+    ]
+  },
+  {
+    "id": "INC-2026042604295411",
+    "timestamp": "2026-04-26T04:29:54.545885",
+    "type": "Physical Altercation",
+    "location": "Bus Stop Outside",
+    "description": "Subject cornered against wall by 2 individuals. High motion variance score.",
+    "severity": "medium",
+    "status": "Resolved",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": []
+  },
+  {
+    "id": "INC-2026042619245413",
+    "timestamp": "2026-04-26T19:24:54.545885",
+    "type": "AI: Harassment Detected",
+    "location": "Stairwell North",
+    "description": "Individual followed subject across 3 camera zones over 8 minutes.",
+    "severity": "low",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.705,
+    "video_file": "footage_20260426_192454.mp4",
+    "evidence_frames": [
+      "00:51",
+      "00:52",
+      "00:35",
+      "00:10"
+    ]
+  },
+  {
+    "id": "INC-2026042706255419",
+    "timestamp": "2026-04-27T06:25:54.545885",
+    "type": "Group Intimidation",
+    "location": "Main Entrance CCTV",
+    "description": "Subject observed exhibiting aggressive posture towards victim for over 3 minutes.",
+    "severity": "low",
+    "status": "Resolved",
+    "source": "ai",
+    "confidence": 0.863,
+    "video_file": "footage_20260427_062554.mp4",
+    "evidence_frames": [
+      "00:43",
+      "00:12",
+      "00:20"
+    ]
+  },
+  {
+    "id": "INC-2026042714085405",
+    "timestamp": "2026-04-27T14:08:54.545885",
+    "type": "Verbal Harassment",
+    "location": "Platform A - Gate 1",
+    "description": "AI model flagged rapid erratic motion pattern. Confidence 82%.",
+    "severity": "low",
+    "status": "Open",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": []
+  },
+  {
+    "id": "INC-2026042817515403",
+    "timestamp": "2026-04-28T17:51:54.545885",
+    "type": "Group Intimidation",
+    "location": "CCTV Camera 4 - Exit",
+    "description": "Individual followed subject across 3 camera zones over 8 minutes.",
+    "severity": "high",
+    "status": "Resolved",
+    "source": "ai",
+    "confidence": 0.785,
+    "video_file": "footage_20260428_175154.mp4",
+    "evidence_frames": [
+      "00:44",
+      "00:51"
+    ]
+  },
+  {
+    "id": "INC-2026043015255416",
+    "timestamp": "2026-04-30T15:25:54.545885",
+    "type": "Property Damage",
+    "location": "Parking Lot B",
+    "description": "Subject cornered against wall by 2 individuals. High motion variance score.",
+    "severity": "medium",
+    "status": "Open",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": []
+  },
+  {
+    "id": "INC-2026043022505417",
+    "timestamp": "2026-04-30T22:50:54.545885",
+    "type": "AI: Suspicious Activity",
+    "location": "Corridor 3 - Camera 2",
+    "description": "Subject observed exhibiting aggressive posture towards victim for over 3 minutes.",
+    "severity": "medium",
+    "status": "Open",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": []
+  },
+  {
+    "id": "INC-2026050118575409",
+    "timestamp": "2026-05-01T18:57:54.545885",
+    "type": "Physical Altercation",
+    "location": "Platform A - Gate 1",
+    "description": "Subject cornered against wall by 2 individuals. High motion variance score.",
+    "severity": "medium",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.783,
+    "video_file": "footage_20260501_185754.mp4",
+    "evidence_frames": [
+      "00:51",
+      "00:58",
+      "00:10"
+    ]
+  },
+  {
+    "id": "INC-2026050120375401",
+    "timestamp": "2026-05-01T20:37:54.545885",
+    "type": "Verbal Harassment",
+    "location": "Platform A - Gate 1",
+    "description": "Individual followed subject across 3 camera zones over 8 minutes.",
+    "severity": "high",
+    "status": "Open",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": []
+  },
+  {
+    "id": "INC-2026050204485412",
+    "timestamp": "2026-05-02T04:48:54.545885",
+    "type": "AI: Suspicious Activity",
+    "location": "Main Entrance CCTV",
+    "description": "AI detected repeated approach-retreat-approach pattern typical of intimidation.",
+    "severity": "medium",
+    "status": "Resolved",
+    "source": "ai",
+    "confidence": 0.653,
+    "video_file": "footage_20260502_044854.mp4",
+    "evidence_frames": [
+      "00:33",
+      "00:38"
+    ]
+  },
+  {
+    "id": "INC-2026050502255408",
+    "timestamp": "2026-05-05T02:25:54.545885",
+    "type": "Stalking/Following",
+    "location": "Main Entrance CCTV",
+    "description": "Loud verbal altercation escalated to physical contact at timestamp 04:32.",
+    "severity": "high",
+    "status": "Investigating",
+    "source": "ai",
+    "confidence": 0.648,
+    "video_file": "footage_20260505_022554.mp4",
+    "evidence_frames": [
+      "00:23",
+      "00:52"
+    ]
+  },
+  {
+    "id": "INC-2026050502265410",
+    "timestamp": "2026-05-05T02:26:54.545885",
+    "type": "AI: Harassment Detected",
+    "location": "Parking Lot B",
+    "description": "AI model flagged rapid erratic motion pattern. Confidence 82%.",
+    "severity": "low",
+    "status": "Investigating",
+    "source": "ai",
+    "confidence": 0.643,
+    "video_file": "footage_20260505_022654.mp4",
+    "evidence_frames": [
+      "00:33"
+    ]
+  },
+  {
+    "id": "INC-2026050510395407",
+    "timestamp": "2026-05-05T10:39:54.545885",
+    "type": "Verbal Harassment",
+    "location": "Bus Stop Outside",
+    "description": "Group of 4 individuals surrounded single person at ATM area.",
+    "severity": "high",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.966,
+    "video_file": "footage_20260505_103954.mp4",
+    "evidence_frames": [
+      "00:30",
+      "00:22",
+      "00:18",
+      "00:24"
+    ]
+  },
+  {
+    "id": "INC-2026050703545414",
+    "timestamp": "2026-05-07T03:54:54.545885",
+    "type": "Threatening Behavior",
+    "location": "Parking Lot B",
+    "description": "Loud verbal altercation escalated to physical contact at timestamp 04:32.",
+    "severity": "medium",
+    "status": "Open",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": []
+  },
+  {
+    "id": "INC-2026050708575406",
+    "timestamp": "2026-05-07T08:57:54.545885",
+    "type": "Verbal Harassment",
+    "location": "Platform A - Gate 1",
+    "description": "Subject cornered against wall by 2 individuals. High motion variance score.",
+    "severity": "medium",
+    "status": "Investigating",
+    "source": "ai",
+    "confidence": 0.657,
+    "video_file": "footage_20260507_085754.mp4",
+    "evidence_frames": [
+      "00:22",
+      "00:11",
+      "00:55",
+      "00:40"
+    ]
+  },
+  {
+    "id": "INC-2026050716565415",
+    "timestamp": "2026-05-07T16:56:54.545885",
+    "type": "Physical Altercation",
+    "location": "CCTV Camera 4 - Exit",
+    "description": "Subject cornered against wall by 2 individuals. High motion variance score.",
+    "severity": "high",
+    "status": "Investigating",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": []
+  },
+  {
+    "id": "INC-2026050723295418",
+    "timestamp": "2026-05-07T23:29:54.545885",
+    "type": "Physical Altercation",
+    "location": "Platform A - Gate 1",
+    "description": "Individual followed subject across 3 camera zones over 8 minutes.",
+    "severity": "medium",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.734,
+    "video_file": "footage_20260507_232954.mp4",
+    "evidence_frames": [
+      "00:34",
+      "00:47"
+    ]
+  },
+  {
+    "id": "INC-20260508235628",
+    "timestamp": "2026-05-08T23:56:28.499625",
+    "type": "AI Detected - Harassment Detected",
+    "location": "CCTV Camera",
+    "description": "AI detected harassment detected in video 20260508_235627_V_99.mp4. Confidence: 96.7%",
+    "severity": "high",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.967,
+    "video_file": "20260508_235627_V_99.mp4",
+    "evidence_frames": [
+      "00:00",
+      "00:00",
+      "00:00",
+      "00:00",
+      "00:01"
+    ]
+  },
+  {
+    "id": "INC-20260508235651",
+    "timestamp": "2026-05-08T23:56:51.607516",
+    "type": "AI: HARASSMENT DETECTED",
+    "location": "CCTV Camera 3",
+    "description": "AI detected HARASSMENT_DETECTED. Confidence: 97%. Sumo fight",
+    "severity": "high",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.967,
+    "video_file": "20260508_235627_V_99.mp4",
+    "evidence_frames": [
+      "00:00",
+      "00:00",
+      "00:00",
+      "00:00",
+      "00:01"
+    ]
+  },
+  {
+    "id": "INC-20260508235829",
+    "timestamp": "2026-05-08T23:58:29.598970",
+    "type": "Verbal Harassment",
+    "location": "Majestic Bus Stand",
+    "description": "Staff using abusive language against passengers or managers directing inappropriate language toward employees.",
+    "severity": "low",
+    "status": "Open",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": []
+  }
+]
