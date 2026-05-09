@@ -71,7 +71,7 @@ def send_sos():
     # ⚠️ IMPORTANT: Replace with the real emergency contact number
     # Format: country code + number, no +, spaces, or dashes
     # Example for India: "919876543210"
-    phone = "919900085486"
+    phone = "91XXXXXXXXXX"
 
     message = quote(f"🚨 EMERGENCY ALERT! I need help. My location: {location}")
     whatsapp_link = f"https://wa.me/{phone}?text={message}"
