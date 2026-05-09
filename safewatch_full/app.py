@@ -84,6 +84,10 @@ def admin_required(f):
 
 
 # ── Auth Routes ───────────────────────────────────────────────────────────────
+@app.route('/safety-map')
+def safety_map():
+    """Renders the map view."""
+    return render_template('map_view.html')
 
 @app.route('/login', methods=['GET'])
 def login_page():
