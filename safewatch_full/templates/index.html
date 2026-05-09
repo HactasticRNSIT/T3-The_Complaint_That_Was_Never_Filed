@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeWatch — Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#080b10;--surface:#0d1117;--border:#1c2333;--accent:#00d4ff;--danger:#ff3b5c;--warn:#ffb700;--safe:#00e676;--text:#e2e8f0;--muted:#64748b;--scan:rgba(0,212,255,0.06);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:1000;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;border-bottom:1px solid var(--border);background:rgba(8,11,16,0.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;}
+  .logo{display:flex;align-items:center;gap:12px;font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--accent);text-decoration:none;}
+  .logo-dot{width:10px;height:10px;background:var(--danger);border-radius:50%;animation:pulse 1.5s infinite;box-shadow:0 0 8px var(--danger);}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+  .nav-right{display:flex;align-items:center;gap:8px;}
+  .nav-links{display:flex;gap:8px;}
+  .nav-links a{padding:8px 18px;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);text-decoration:none;border:1px solid transparent;border-radius:4px;transition:all 0.2s;letter-spacing:0.5px;}
+  .nav-links a:hover,.nav-links a.active{color:var(--accent);border-color:var(--accent);background:rgba(0,212,255,0.05);}
+  .nav-links a.sos-link{color:#ff3b5c;border-color:rgba(255,59,92,0.4);background:rgba(255,59,92,0.05);}
+  .user-info{display:flex;align-items:center;gap:10px;margin-left:16px;padding-left:16px;border-left:1px solid var(--border);}
+  .user-badge{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+  .role-tag{padding:3px 8px;border-radius:3px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;}
+  .role-admin{background:rgba(0,212,255,0.15);color:var(--accent);}
+  .role-user{background:rgba(100,116,139,0.2);color:var(--muted);}
+  .logout-btn{padding:6px 14px;background:transparent;color:var(--danger);border:1px solid rgba(255,59,92,0.3);border-radius:4px;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+  .logout-btn:hover{background:rgba(255,59,92,0.1);}
+
+  .hero{text-align:center;padding:80px 40px 60px;position:relative;overflow:hidden;}
+  .hero::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:600px;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border:1px solid rgba(0,212,255,0.3);border-radius:20px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);margin-bottom:28px;background:rgba(0,212,255,0.05);}
+  .hero h1{font-size:clamp(36px,6vw,72px);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:20px;}
+  .hero h1 span{color:var(--danger);}
+  .hero p{font-size:18px;color:var(--muted);max-width:560px;margin:0 auto 40px;line-height:1.6;}
+  .cta-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+  .btn-primary{padding:14px 32px;background:var(--accent);color:#000;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;border:none;border-radius:6px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,212,255,0.3);}
+  .btn-outline{padding:14px 32px;background:transparent;color:var(--text);font-family:'Space Mono',monospace;font-size:13px;border:1px solid var(--border);border-radius:6px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;}
+  .btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-sos{padding:14px 32px;background:rgba(255,59,92,0.1);color:var(--danger);font-family:'Space Mono',monospace;font-size:13px;font-weight:700;border:1px solid rgba(255,59,92,0.4);border-radius:6px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;}
+  .btn-sos:hover{background:rgba(255,59,92,0.2);}
+
+  .upload-zone{max-width:720px;margin:0 auto;padding:0 40px 80px;}
+  .dropzone{border:2px dashed var(--border);border-radius:12px;padding:60px 40px;text-align:center;cursor:pointer;transition:all 0.3s;background:var(--surface);position:relative;overflow:hidden;}
+  .dropzone.dragover{border-color:var(--accent);background:rgba(0,212,255,0.04);}
+  .dropzone-icon{font-size:48px;margin-bottom:16px;}
+  .dropzone h3{font-size:20px;margin-bottom:8px;}
+  .dropzone p{color:var(--muted);font-size:14px;font-family:'Space Mono',monospace;}
+  .dropzone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+
+  .analysis-panel{max-width:720px;margin:0 auto 60px;padding:0 40px;display:none;}
+  .analysis-panel.visible{display:block;}
+  .progress-bar-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:20px;}
+  .progress-label{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:12px;}
+  .progress-track{background:var(--border);border-radius:4px;height:6px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#0088ff);border-radius:4px;width:0%;transition:width 0.3s;box-shadow:0 0 8px rgba(0,212,255,0.5);}
+
+  .result-card{border-radius:12px;border:1px solid var(--border);padding:32px;background:var(--surface);display:none;}
+  .result-card.visible{display:block;animation:fadeUp 0.4s ease;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .verdict-row{display:flex;align-items:center;gap:20px;margin-bottom:24px;}
+  .verdict-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+  .verdict-icon.danger{background:rgba(255,59,92,0.15);border:1px solid rgba(255,59,92,0.3);}
+  .verdict-icon.warn{background:rgba(255,183,0,0.15);border:1px solid rgba(255,183,0,0.3);}
+  .verdict-icon.safe{background:rgba(0,230,118,0.15);border:1px solid rgba(0,230,118,0.3);}
+  .verdict-title{font-size:22px;font-weight:700;}
+  .verdict-sub{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);margin-top:4px;}
+  .conf-bar{margin-bottom:24px;}
+  .conf-label{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:8px;}
+  .conf-track{background:var(--border);border-radius:4px;height:8px;overflow:hidden;}
+  .conf-fill{height:100%;border-radius:4px;transition:width 1s ease;}
+  .conf-fill.danger{background:var(--danger);box-shadow:0 0 8px rgba(255,59,92,0.5);}
+  .conf-fill.warn{background:var(--warn);}
+  .conf-fill.safe{background:var(--safe);}
+  .evidence-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:20px;}
+  .evidence-frame{border-radius:8px;overflow:hidden;border:1px solid var(--border);position:relative;}
+  .evidence-frame img{width:100%;display:block;}
+  .frame-time{position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,0.8);font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);padding:2px 6px;border-radius:3px;}
+  .frame-score{position:absolute;top:6px;right:6px;background:rgba(255,59,92,0.9);font-family:'Space Mono',monospace;font-size:10px;color:#fff;padding:2px 6px;border-radius:3px;}
+
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:60px;}
+  .stat-box{background:var(--surface);padding:28px 32px;text-align:center;}
+  .stat-num{font-size:36px;font-weight:800;color:var(--accent);font-family:'Space Mono',monospace;}
+  .stat-num.danger{color:var(--danger);}
+  .stat-label{font-size:12px;color:var(--muted);margin-top:4px;font-family:'Space Mono',monospace;letter-spacing:0.5px;}
+
+  .section-title{font-size:28px;font-weight:800;margin-bottom:24px;padding:0 40px;}
+  .section-title span{color:var(--accent);}
+  .features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:80px;}
+  .feature-card{background:var(--surface);padding:36px 32px;}
+  .feature-icon{font-size:32px;margin-bottom:16px;}
+  .feature-card h3{font-size:16px;font-weight:700;margin-bottom:10px;}
+  .feature-card p{font-size:14px;color:var(--muted);line-height:1.6;}
+
+  footer{border-top:1px solid var(--border);padding:24px 40px;display:flex;justify-content:space-between;align-items:center;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);}
+  .log-btn{margin-top:20px;padding:12px 24px;background:var(--danger);color:#fff;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;}
+  .log-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,59,92,0.3);}
+  @media(max-width:768px){.stats-row{grid-template-columns:repeat(2,1fr);}nav{padding:12px 20px;}.hero{padding:60px 20px 40px;}.upload-zone,.analysis-panel{padding:0 20px 60px;}.user-info{display:none;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/"><span class="logo-dot"></span>SafeWatch</a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="/" class="active">Analysis</a>
+      {% if role == 'admin' %}
+      <a href="/dashboard">System Dashboard</a>
+      <a href="/incidents">Incidents</a>
+      {% endif %}
+      <a href="/sos" class="sos-link">🆘 SOS</a>
+    </div>
+    <div class="user-info">
+      <span class="user-badge">{{ username }}</span>
+      <span class="role-tag role-{{ role }}">{{ role | upper }}</span>
+      <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge"><span>●</span> AI-POWERED CCTV ANALYSIS — OFFLINE CAPABLE</div>
+  <h1>Detect Harassment<br><span>Before It's Too Late</span></h1>
+  <p>Upload CCTV footage and get instant AI-powered analysis. Every incident is documented with timestamp, severity, and evidence frames.</p>
+  <div class="cta-row">
+    <a href="#upload" class="btn-primary">⬆ Upload Footage</a>
+    <a href="/sos" class="btn-sos">🆘 Emergency SOS</a>
+    {% if role == 'admin' %}<a href="/dashboard" class="btn-outline">📊 Dashboard</a>{% endif %}
+  </div>
+</section>
+
+<div class="stats-row" id="statsRow">
+  <div class="stat-box"><div class="stat-num" id="statTotal">—</div><div class="stat-label">TOTAL INCIDENTS</div></div>
+  <div class="stat-box"><div class="stat-num danger" id="statOpen">—</div><div class="stat-label">OPEN CASES</div></div>
+  <div class="stat-box"><div class="stat-num" id="statAI">—</div><div class="stat-label">AI DETECTED</div></div>
+  <div class="stat-box"><div class="stat-num" id="statResolved">—</div><div class="stat-label">RESOLVED</div></div>
+</div>
+
+<div id="upload" class="upload-zone">
+  <div class="dropzone" id="dropzone">
+    <input type="file" id="fileInput" accept="video/*">
+    <div class="dropzone-icon">📹</div>
+    <h3>Drop CCTV footage here</h3>
+    <p>MP4, AVI, MOV supported · Max 500MB · Processed locally</p>
+  </div>
+</div>
+
+<div class="analysis-panel" id="analysisPanel">
+  <div class="progress-bar-wrap">
+    <div class="progress-label"><span id="progressLabel">Analyzing footage...</span><span id="progressPct">0%</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+  <div class="result-card" id="resultCard">
+    <div class="verdict-row">
+      <div class="verdict-icon" id="verdictIcon">⚠️</div>
+      <div><div class="verdict-title" id="verdictTitle">Analyzing...</div><div class="verdict-sub" id="verdictSub">—</div></div>
+    </div>
+    <div class="conf-bar">
+      <div class="conf-label"><span>CONFIDENCE SCORE</span><span id="confPct">—</span></div>
+      <div class="conf-track"><div class="conf-fill" id="confFill" style="width:0%"></div></div>
+    </div>
+    <div id="evidenceFrames" class="evidence-grid"></div>
+    <button class="log-btn" id="logBtn" onclick="logIncident()" style="display:none">📋 Log as Incident</button>
+  </div>
+</div>
+
+<div class="section-title">System <span>Features</span></div>
+<div class="features-grid">
+  <div class="feature-card"><div class="feature-icon">🔍</div><h3>Optical Flow Analysis</h3><p>Tracks erratic motion patterns, sudden movements, and aggressive postures across CCTV frames using dense optical flow.</p></div>
+  <div class="feature-card"><div class="feature-icon">📋</div><h3>Auto Incident Logging</h3><p>Detected harassment is automatically logged with timestamp, confidence score, and extracted evidence frames.</p></div>
+  <div class="feature-card"><div class="feature-icon">🆘</div><h3>Emergency SOS</h3><p>One-tap emergency alert with GPS location sent via WhatsApp to your emergency contact. Works offline.</p></div>
+  <div class="feature-card"><div class="feature-icon">🔐</div><h3>Role-Based Access</h3><p>Users get Analysis and SOS. Admins get full access: Dashboard, Incidents, and Model Training.</p></div>
+  <div class="feature-card"><div class="feature-icon">📡</div><h3>100% Offline</h3><p>No cloud dependency. All processing happens locally. Your footage never leaves the building.</p></div>
+  <div class="feature-card"><div class="feature-icon">🎓</div><h3>Custom Model Training</h3><p>Train on your own dataset of normal vs harassment footage to improve detection accuracy over time.</p></div>
+</div>
+
+<footer>
+  <span>SafeWatch v2.0 — Hackathon Build</span>
+  <span>⚡ All processing is local — No data leaves this machine</span>
+</footer>
+
+<script>
+const dropzone=document.getElementById('dropzone'),fileInput=document.getElementById('fileInput');
+let lastResult=null,pollInterval=null;
+
+async function loadStats(){
+  try{const r=await fetch('/api/stats'),s=await r.json();
+  document.getElementById('statTotal').textContent=s.total;
+  document.getElementById('statOpen').textContent=s.open;
+  document.getElementById('statAI').textContent=s.ai_detected;
+  document.getElementById('statResolved').textContent=s.resolved;}catch(e){}
+}
+loadStats();
+
+dropzone.addEventListener('dragover',e=>{e.preventDefault();dropzone.classList.add('dragover');});
+dropzone.addEventListener('dragleave',()=>dropzone.classList.remove('dragover'));
+dropzone.addEventListener('drop',e=>{e.preventDefault();dropzone.classList.remove('dragover');const f=e.dataTransfer.files[0];if(f)uploadFile(f);});
+fileInput.addEventListener('change',e=>{if(e.target.files[0])uploadFile(e.target.files[0]);});
+
+async function uploadFile(file){
+  const form=new FormData();form.append('video',file);
+  document.getElementById('analysisPanel').classList.add('visible');
+  document.getElementById('resultCard').classList.remove('visible');
+  document.getElementById('progressLabel').textContent='Uploading & analyzing...';
+  document.getElementById('progressFill').style.width='5%';
+  document.getElementById('progressPct').textContent='5%';
+  document.getElementById('logBtn').style.display='none';
+  try{await fetch('/api/analyze',{method:'POST',body:form});startPolling();}
+  catch(e){document.getElementById('progressLabel').textContent='Error: '+e.message;}
+}
+
+function startPolling(){
+  if(pollInterval)clearInterval(pollInterval);
+  pollInterval=setInterval(async()=>{
+    try{const r=await fetch('/api/detection_status'),s=await r.json();
+    document.getElementById('progressFill').style.width=s.progress+'%';
+    document.getElementById('progressPct').textContent=s.progress+'%';
+    if(s.progress>5&&s.progress<100)document.getElementById('progressLabel').textContent='Analyzing optical flow patterns...';
+    if(!s.running&&s.result){clearInterval(pollInterval);showResult(s.result);loadStats();}}catch(e){}
+  },800);
+}
+
+function showResult(r){
+  lastResult=r;const card=document.getElementById('resultCard');card.classList.add('visible');
+  const icons={HARASSMENT_DETECTED:'🚨',SUSPICIOUS:'⚠️',NORMAL:'✅',ERROR:'❌'};
+  const titles={HARASSMENT_DETECTED:'HARASSMENT DETECTED',SUSPICIOUS:'SUSPICIOUS ACTIVITY',NORMAL:'NORMAL ACTIVITY',ERROR:'ANALYSIS ERROR'};
+  const cls={HARASSMENT_DETECTED:'danger',SUSPICIOUS:'warn',NORMAL:'safe',ERROR:'danger'}[r.verdict]||'warn';
+  document.getElementById('verdictIcon').textContent=icons[r.verdict]||'❓';
+  document.getElementById('verdictIcon').className=`verdict-icon ${cls}`;
+  document.getElementById('verdictTitle').textContent=titles[r.verdict]||r.verdict;
+  document.getElementById('verdictSub').textContent=`${r.frames_analyzed||0} frames analyzed · Severity: ${(r.severity||'').toUpperCase()} · ${new Date(r.timestamp).toLocaleTimeString()}`;
+  const pct=Math.round((r.confidence||0)*100);
+  document.getElementById('confPct').textContent=pct+'%';
+  document.getElementById('confFill').style.width=pct+'%';
+  document.getElementById('confFill').className=`conf-fill ${cls}`;
+  const grid=document.getElementById('evidenceFrames');grid.innerHTML='';
+  (r.evidence_frames||[]).forEach(ef=>{
+    const d=document.createElement('div');d.className='evidence-frame';
+    d.innerHTML=`<img src="${ef.frame}" alt="evidence"><span class="frame-time">${ef.timestamp}</span><span class="frame-score">${Math.round(ef.score*100)}%</span>`;
+    grid.appendChild(d);
+  });
+  if(r.verdict!=='NORMAL'&&r.verdict!=='ERROR')document.getElementById('logBtn').style.display='inline-flex';
+  document.getElementById('progressLabel').textContent='Analysis complete';
+}
+
+async function logIncident(){
+  if(!lastResult)return;
+  const loc=prompt('Enter camera/location label:','CCTV Camera 1')||'CCTV Camera';
+  const desc=prompt('Additional notes:','')||'';
+  await fetch('/api/incidents',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({type:'AI: '+lastResult.verdict.replace(/_/g,' '),location:loc,
+      description:`AI detected ${lastResult.verdict}. Confidence: ${Math.round(lastResult.confidence*100)}%. ${desc}`.trim(),
+      severity:lastResult.severity,source:'ai',confidence:lastResult.confidence,
+      video_file:lastResult.filename,evidence_frames:(lastResult.evidence_frames||[]).map(f=>f.timestamp)})});
+  document.getElementById('logBtn').textContent='✅ Incident Logged';
+  document.getElementById('logBtn').disabled=true;loadStats();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+[
+  {
+    "username": "admin",
+    "password": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+    "role": "admin",
+    "name": "Administrator"
+  },
+  {
+    "username": "user",
+    "password": "e606e38b0d8c19b24cf0ee3808183162ea7cd63ff7912dbb22b5e803286b4446",
+    "role": "user",
+    "name": "User"
+  },
+  {
+    "username": "moon",
+    "password": "14df4811004f9efc2dd0aa8c976164d98a17049bbbf7fe6aa8ce3179c37724be",
+    "role": "user",
+    "name": "Moon"
+  }
+]
