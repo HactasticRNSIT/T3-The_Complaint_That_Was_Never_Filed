@@ -31,7 +31,6 @@ The system bridges the gap between **citizens and policymakers**, ensuring proac
 - 📝 Easy complaint submission with structured forms  
 - 📍 Location-based tagging for contextual insights  
 - 📊 Complaint status tracking (Pending / In Progress / Resolved)  
-- 🔔 Notification system for updates  
 - 👥 User-friendly interface accessible to all  
 - 🔒 Secure data handling with privacy safeguards  
 - 📂 Organized complaint history for accountability  
