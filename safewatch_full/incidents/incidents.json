@@ -1,0 +1,393 @@
+[
+  {
+    "id": "INC-2026042502415815",
+    "timestamp": "2026-04-25T02:41:58.048029",
+    "type": "Physical Altercation",
+    "location": "CCTV Camera 4 - Exit",
+    "description": "Subject observed exhibiting aggressive posture towards victim for over 3 minutes.",
+    "severity": "medium",
+    "status": "Resolved",
+    "source": "ai",
+    "confidence": 0.791,
+    "video_file": "footage_20260425_024158.mp4",
+    "evidence_frames": [
+      "00:25",
+      "00:10",
+      "00:59"
+    ]
+  },
+  {
+    "id": "INC-2026042503195813",
+    "timestamp": "2026-04-25T03:19:58.048029",
+    "type": "Threatening Behavior",
+    "location": "CCTV Camera 4 - Exit",
+    "description": "AI detected repeated approach-retreat-approach pattern typical of intimidation.",
+    "severity": "low",
+    "status": "Investigating",
+    "source": "ai",
+    "confidence": 0.755,
+    "video_file": "footage_20260425_031958.mp4",
+    "evidence_frames": [
+      "00:34",
+      "00:41"
+    ]
+  },
+  {
+    "id": "INC-2026042506335805",
+    "timestamp": "2026-04-25T06:33:58.048029",
+    "type": "Physical Altercation",
+    "location": "Bus Stop Outside",
+    "description": "Individual followed subject across 3 camera zones over 8 minutes.",
+    "severity": "medium",
+    "status": "Resolved",
+    "source": "ai",
+    "confidence": 0.949,
+    "video_file": "footage_20260425_063358.mp4",
+    "evidence_frames": [
+      "00:55",
+      "00:27",
+      "00:41"
+    ]
+  },
+  {
+    "id": "INC-2026042518025804",
+    "timestamp": "2026-04-25T18:02:58.048029",
+    "type": "Group Intimidation",
+    "location": "Bus Stop Outside",
+    "description": "Sustained close-proximity behavior with blocking exit pattern detected.",
+    "severity": "high",
+    "status": "Investigating",
+    "source": "ai",
+    "confidence": 0.787,
+    "video_file": "footage_20260425_180258.mp4",
+    "evidence_frames": [
+      "00:44",
+      "00:28"
+    ]
+  },
+  {
+    "id": "INC-2026042608035814",
+    "timestamp": "2026-04-26T08:03:58.048029",
+    "type": "Threatening Behavior",
+    "location": "Parking Lot B",
+    "description": "Loud verbal altercation escalated to physical contact at timestamp 04:32.",
+    "severity": "medium",
+    "status": "Resolved",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": []
+  },
+  {
+    "id": "INC-2026042620265819",
+    "timestamp": "2026-04-26T20:26:58.048029",
+    "type": "Group Intimidation",
+    "location": "Platform A - Gate 1",
+    "description": "Individual followed subject across 3 camera zones over 8 minutes.",
+    "severity": "medium",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.643,
+    "video_file": "footage_20260426_202658.mp4",
+    "evidence_frames": [
+      "00:33",
+      "00:27",
+      "00:26"
+    ]
+  },
+  {
+    "id": "INC-2026042707135802",
+    "timestamp": "2026-04-27T07:13:58.048029",
+    "type": "AI: Suspicious Activity",
+    "location": "Corridor 3 - Camera 2",
+    "description": "Subject cornered against wall by 2 individuals. High motion variance score.",
+    "severity": "medium",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.703,
+    "video_file": "footage_20260427_071358.mp4",
+    "evidence_frames": [
+      "00:20"
+    ]
+  },
+  {
+    "id": "INC-2026042806225808",
+    "timestamp": "2026-04-28T06:22:58.048029",
+    "type": "Verbal Harassment",
+    "location": "Corridor 3 - Camera 2",
+    "description": "Sustained close-proximity behavior with blocking exit pattern detected.",
+    "severity": "high",
+    "status": "Resolved",
+    "source": "ai",
+    "confidence": 0.667,
+    "video_file": "footage_20260428_062258.mp4",
+    "evidence_frames": [
+      "00:52",
+      "00:59",
+      "00:38"
+    ]
+  },
+  {
+    "id": "INC-2026042808045810",
+    "timestamp": "2026-04-28T08:04:58.048029",
+    "type": "Stalking/Following",
+    "location": "Corridor 3 - Camera 2",
+    "description": "AI detected repeated approach-retreat-approach pattern typical of intimidation.",
+    "severity": "high",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.658,
+    "video_file": "footage_20260428_080458.mp4",
+    "evidence_frames": [
+      "00:37"
+    ]
+  },
+  {
+    "id": "INC-2026042812335809",
+    "timestamp": "2026-04-28T12:33:58.048029",
+    "type": "Verbal Harassment",
+    "location": "Elevator Block C",
+    "description": "Individual followed subject across 3 camera zones over 8 minutes.",
+    "severity": "medium",
+    "status": "Resolved",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": []
+  },
+  {
+    "id": "INC-2026042916085817",
+    "timestamp": "2026-04-29T16:08:58.048029",
+    "type": "Threatening Behavior",
+    "location": "CCTV Camera 4 - Exit",
+    "description": "AI model flagged rapid erratic motion pattern. Confidence 82%.",
+    "severity": "high",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.672,
+    "video_file": "footage_20260429_160858.mp4",
+    "evidence_frames": [
+      "00:26",
+      "00:28",
+      "00:42",
+      "00:42"
+    ]
+  },
+  {
+    "id": "INC-2026042921025801",
+    "timestamp": "2026-04-29T21:02:58.048029",
+    "type": "AI: Harassment Detected",
+    "location": "Corridor 3 - Camera 2",
+    "description": "Sustained close-proximity behavior with blocking exit pattern detected.",
+    "severity": "medium",
+    "status": "Investigating",
+    "source": "ai",
+    "confidence": 0.624,
+    "video_file": "footage_20260429_210258.mp4",
+    "evidence_frames": [
+      "00:22",
+      "00:16",
+      "00:46",
+      "00:54"
+    ]
+  },
+  {
+    "id": "INC-2026043001475818",
+    "timestamp": "2026-04-30T01:47:58.048029",
+    "type": "Property Damage",
+    "location": "Parking Lot B",
+    "description": "AI detected repeated approach-retreat-approach pattern typical of intimidation.",
+    "severity": "medium",
+    "status": "Open",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": []
+  },
+  {
+    "id": "INC-2026043023125807",
+    "timestamp": "2026-04-30T23:12:58.048029",
+    "type": "Stalking/Following",
+    "location": "Main Entrance CCTV",
+    "description": "Subject cornered against wall by 2 individuals. High motion variance score.",
+    "severity": "medium",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.62,
+    "video_file": "footage_20260430_231258.mp4",
+    "evidence_frames": [
+      "00:56"
+    ]
+  },
+  {
+    "id": "INC-2026050321475811",
+    "timestamp": "2026-05-03T21:47:58.048029",
+    "type": "Verbal Harassment",
+    "location": "Platform A - Gate 1",
+    "description": "AI detected repeated approach-retreat-approach pattern typical of intimidation.",
+    "severity": "medium",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.566,
+    "video_file": "footage_20260503_214758.mp4",
+    "evidence_frames": [
+      "00:53",
+      "00:48",
+      "00:39"
+    ]
+  },
+  {
+    "id": "INC-2026050404395812",
+    "timestamp": "2026-05-04T04:39:58.048029",
+    "type": "AI: Suspicious Activity",
+    "location": "Main Entrance CCTV",
+    "description": "Sustained close-proximity behavior with blocking exit pattern detected.",
+    "severity": "medium",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.649,
+    "video_file": "footage_20260504_043958.mp4",
+    "evidence_frames": [
+      "00:37",
+      "00:49",
+      "00:53",
+      "00:26"
+    ]
+  },
+  {
+    "id": "INC-2026050508565806",
+    "timestamp": "2026-05-05T08:56:58.048029",
+    "type": "Property Damage",
+    "location": "Platform A - Gate 1",
+    "description": "Subject cornered against wall by 2 individuals. High motion variance score.",
+    "severity": "high",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 0.776,
+    "video_file": "footage_20260505_085658.mp4",
+    "evidence_frames": [
+      "00:38"
+    ]
+  },
+  {
+    "id": "INC-2026050618425800",
+    "timestamp": "2026-05-06T18:42:58.048029",
+    "type": "Property Damage",
+    "location": "CCTV Camera 4 - Exit",
+    "description": "AI model flagged rapid erratic motion pattern. Confidence 82%.",
+    "severity": "medium",
+    "status": "Investigating",
+    "source": "ai",
+    "confidence": 0.965,
+    "video_file": "footage_20260506_184258.mp4",
+    "evidence_frames": [
+      "00:40",
+      "00:25",
+      "00:16"
+    ]
+  },
+  {
+    "id": "INC-2026050702005803",
+    "timestamp": "2026-05-07T02:00:58.048029",
+    "type": "Stalking/Following",
+    "location": "Elevator Block C",
+    "description": "AI model flagged rapid erratic motion pattern. Confidence 82%.",
+    "severity": "low",
+    "status": "Open",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": []
+  },
+  {
+    "id": "INC-2026050816535816",
+    "timestamp": "2026-05-08T16:53:58.048029",
+    "type": "AI: Harassment Detected",
+    "location": "Parking Lot B",
+    "description": "Sustained close-proximity behavior with blocking exit pattern detected.",
+    "severity": "high",
+    "status": "Resolved",
+    "source": "ai",
+    "confidence": 0.753,
+    "video_file": "footage_20260508_165358.mp4",
+    "evidence_frames": [
+      "00:29",
+      "00:58",
+      "00:13"
+    ]
+  },
+  {
+    "id": "INC-20260509072536",
+    "timestamp": "2026-05-09T07:25:36.118463",
+    "type": "AI Detected - Harassment Detected",
+    "location": "CCTV Camera",
+    "description": "AI detected harassment detected in 20260509_072534_V_99.mp4. Confidence: 100.0%",
+    "severity": "high",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 1.0,
+    "video_file": "20260509_072534_V_99.mp4",
+    "evidence_frames": [
+      "00:00",
+      "00:00",
+      "00:00",
+      "00:00",
+      "00:01"
+    ],
+    "reported_by": "AI System"
+  },
+  {
+    "id": "INC-20260509072602",
+    "timestamp": "2026-05-09T07:26:02.822379",
+    "type": "AI: HARASSMENT DETECTED",
+    "location": "CCTV Camera 3",
+    "description": "AI detected HARASSMENT_DETECTED. Confidence: 100%. Physical altercation",
+    "severity": "high",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 1,
+    "video_file": "20260509_072534_V_99.mp4",
+    "evidence_frames": [
+      "00:00",
+      "00:00",
+      "00:00",
+      "00:00",
+      "00:01"
+    ],
+    "reported_by": "User"
+  },
+  {
+    "id": "INC-20260509072706",
+    "timestamp": "2026-05-09T07:27:06.506462",
+    "type": "Verbal Harassment",
+    "location": "Majestic Bus Stand",
+    "description": "Crew members (conductors/drivers) engage in verbal abuse, yelling, or intimidating passengers.",
+    "severity": "low",
+    "status": "Open",
+    "source": "manual",
+    "confidence": null,
+    "video_file": null,
+    "evidence_frames": [],
+    "reported_by": "Administrator"
+  },
+  {
+    "id": "INC-20260509072727",
+    "timestamp": "2026-05-09T07:27:27.060417",
+    "type": "AI Detected - Harassment Detected",
+    "location": "CCTV Camera",
+    "description": "AI detected harassment detected in 20260509_072723_V_99.mp4. Confidence: 100.0%",
+    "severity": "high",
+    "status": "Open",
+    "source": "ai",
+    "confidence": 1.0,
+    "video_file": "20260509_072723_V_99.mp4",
+    "evidence_frames": [
+      "00:00",
+      "00:00",
+      "00:00",
+      "00:00",
+      "00:01"
+    ],
+    "reported_by": "AI System"
+  }
+]

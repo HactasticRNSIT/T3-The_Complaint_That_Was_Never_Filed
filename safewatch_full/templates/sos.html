@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeWatch — Emergency SOS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#080b10;--surface:#0d1117;--border:#1c2333;--accent:#00d4ff;--danger:#ff3b5c;--text:#e2e8f0;--muted:#64748b;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:radial-gradient(circle at center,#1a0005,#080b10);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;}
+    body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:1000;}
+    nav{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;border-bottom:1px solid var(--border);background:rgba(8,11,16,0.95);backdrop-filter:blur(10px);z-index:100;}
+    .logo{display:flex;align-items:center;gap:12px;font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--accent);text-decoration:none;}
+    .logo-dot{width:10px;height:10px;background:var(--danger);border-radius:50%;animation:blink 1s infinite;box-shadow:0 0 8px var(--danger);}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+    .nav-right{display:flex;align-items:center;gap:8px;}
+    .nav-links{display:flex;gap:8px;}
+    .nav-links a{padding:8px 18px;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);text-decoration:none;border:1px solid transparent;border-radius:4px;transition:all 0.2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--danger);border-color:var(--danger);background:rgba(255,59,92,0.05);}
+    .user-info{display:flex;align-items:center;gap:10px;margin-left:16px;padding-left:16px;border-left:1px solid var(--border);}
+    .user-badge{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+    .role-tag{padding:3px 8px;border-radius:3px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;}
+    .role-admin{background:rgba(0,212,255,0.15);color:var(--accent);}
+    .role-user{background:rgba(100,116,139,0.2);color:var(--muted);}
+    .logout-btn{padding:6px 14px;background:transparent;color:var(--danger);border:1px solid rgba(255,59,92,0.3);border-radius:4px;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+
+    .sos-container{display:flex;flex-direction:column;align-items:center;gap:32px;padding:80px 20px 20px;}
+    .sos-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:4px;color:var(--danger);display:flex;align-items:center;gap:8px;}
+    .sos-label::before,.sos-label::after{content:'';width:40px;height:1px;background:var(--danger);opacity:0.4;}
+    h1{font-size:clamp(28px,5vw,42px);font-weight:800;letter-spacing:-1px;line-height:1.1;}
+    h1 span{color:var(--danger);}
+    .sos-btn{width:200px;height:200px;border-radius:50%;border:none;font-size:32px;font-weight:800;font-family:'Space Mono',monospace;color:white;background:var(--danger);cursor:pointer;box-shadow:0 0 0 0 rgba(255,59,92,0.4);animation:pulse-ring 2s infinite;transition:transform 0.1s;letter-spacing:2px;}
+    .sos-btn:hover{transform:scale(1.04);}
+    .sos-btn:active{transform:scale(0.97);}
+    .sos-btn.activated{animation:pulse-ring-fast 0.6s infinite;}
+    @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(255,59,92,0.5),0 0 40px rgba(255,59,92,0.2)}50%{box-shadow:0 0 0 28px rgba(255,59,92,0),0 0 60px rgba(255,59,92,0.35)}100%{box-shadow:0 0 0 0 rgba(255,59,92,0),0 0 40px rgba(255,59,92,0.2)}}
+    @keyframes pulse-ring-fast{0%{box-shadow:0 0 0 0 rgba(255,59,92,0.7),0 0 60px rgba(255,59,92,0.5)}50%{box-shadow:0 0 0 40px rgba(255,59,92,0),0 0 80px rgba(255,59,92,0.6)}100%{box-shadow:0 0 0 0 rgba(255,59,92,0),0 0 60px rgba(255,59,92,0.5)}}
+    #status{font-family:'Space Mono',monospace;font-size:13px;color:var(--muted);min-height:20px;transition:color 0.3s;}
+    #status.active{color:var(--danger);}
+    #status.sent{color:#00e676;}
+    .warning-box{border:1px solid rgba(255,59,92,0.2);border-radius:8px;padding:12px 24px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);background:rgba(255,59,92,0.04);max-width:320px;}
+    .back-link{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:8px 18px;border-radius:4px;transition:all 0.2s;}
+    .back-link:hover{color:var(--accent);border-color:var(--accent);}
+    @media(max-width:480px){nav{padding:12px 20px;}.nav-links{display:none;}.user-info{display:none;}.sos-btn{width:170px;height:170px;font-size:28px;}}
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/"><span class="logo-dot"></span>SafeWatch</a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="/">Analysis</a>
+      {% if role == 'admin' %}
+      <a href="/dashboard">System Dashboard</a>
+      <a href="/incidents">Incidents</a>
+      {% endif %}
+      <a href="/sos" class="active">🆘 SOS</a>
+    </div>
+    <div class="user-info">
+      <span class="user-badge">{{ username }}</span>
+      <span class="role-tag role-{{ role }}">{{ role | upper }}</span>
+      <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+  </div>
+</nav>
+
+<div class="sos-container">
+  <div class="sos-label">EMERGENCY ALERT SYSTEM</div>
+  <h1>Press If You're<br><span>In Danger</span></h1>
+  <button class="sos-btn" id="sosBtn" onclick="activateSOS()">SOS</button>
+  <p id="status">Ready — tap button to send emergency alert</p>
+  <div class="warning-box">⚠️ Only press in genuine emergencies.<br>This will share your GPS location via WhatsApp.</div>
+  <a href="/" class="back-link">← Back to SafeWatch</a>
+</div>
+
+<audio id="sirenSound" src="{{ url_for('static', filename='siren.mp3') }}"></audio>
+
+<script>
+let activated=false;
+function activateSOS(){
+  if(activated)return; activated=true;
+  const btn=document.getElementById('sosBtn'),status=document.getElementById('status');
+  btn.classList.add('activated');
+  document.getElementById('sirenSound').play().catch(()=>{});
+  status.className='active'; status.innerText='📍 Getting your location...';
+  if(!navigator.geolocation){status.innerText='❌ Geolocation not supported';activated=false;btn.classList.remove('activated');return;}
+  navigator.geolocation.getCurrentPosition(sendToServer,()=>{
+    status.innerText='❌ Location permission denied — please allow location access';
+    activated=false;btn.classList.remove('activated');
+  },{enableHighAccuracy:true,timeout:10000});
+}
+function sendToServer(position){
+  const lat=position.coords.latitude,lon=position.coords.longitude;
+  const mapLink=`https://maps.google.com/?q=${lat},${lon}`;
+  const status=document.getElementById('status');
+  status.innerText='📡 Sending SOS...';
+  fetch('/send_sos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:mapLink})})
+  .then(r=>r.json()).then(data=>{
+    const win=window.open('','_blank');
+    if(win){win.location=data.whatsapp_link;}else{window.location.href=data.whatsapp_link;}
+    status.className='sent'; status.innerText='✅ SOS sent! WhatsApp opened with your location.';
+  }).catch(()=>{
+    status.innerText='❌ Failed to send SOS — check your connection';
+    activated=false;document.getElementById('sosBtn').classList.remove('activated');
+  });
+}
+</script>
+</body>
+</html>

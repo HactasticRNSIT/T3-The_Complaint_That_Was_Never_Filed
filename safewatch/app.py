@@ -60,10 +60,13 @@ def incidents_page():
 def sos_page():
     return render_template('sos.html')
 
+<<<<<<< HEAD
 @app.route('/safety-map')
 def safety_map(): 
     """Renders the container for the Node.js Heatmap."""
     return render_template('map_view.html')
+=======
+>>>>>>> a56d8e777c1ed647e5c54eddcfcb04f9417a737f
 
 # ─── SOS Emergency Route ──────────────────────────────────────────────────────
 
@@ -75,7 +78,11 @@ def send_sos():
     # ⚠️ IMPORTANT: Replace with the real emergency contact number
     # Format: country code + number, no +, spaces, or dashes
     # Example for India: "919876543210"
+<<<<<<< HEAD
     phone = "919900085486"
+=======
+    phone = "91XXXXXXXXXX"
+>>>>>>> a56d8e777c1ed647e5c54eddcfcb04f9417a737f
 
     message = quote(f"🚨 EMERGENCY ALERT! I need help. My location: {location}")
     whatsapp_link = f"https://wa.me/{phone}?text={message}"

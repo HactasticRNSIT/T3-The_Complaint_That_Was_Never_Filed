@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeWatch — Register</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#080b10;--surface:#0d1117;--border:#1c2333;--accent:#00d4ff;--danger:#ff3b5c;--safe:#00e676;--text:#e2e8f0;--muted:#64748b;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:1000;}
+  .card{width:420px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:48px 40px;}
+  .logo{display:flex;align-items:center;gap:12px;font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--accent);margin-bottom:32px;justify-content:center;}
+  .logo-dot{width:10px;height:10px;background:var(--danger);border-radius:50%;box-shadow:0 0 8px var(--danger);animation:blink 1.2s infinite;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+  h2{font-size:24px;font-weight:800;margin-bottom:6px;text-align:center;}
+  .sub{text-align:center;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:32px;}
+  .field{margin-bottom:18px;}
+  label{display:block;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:7px;}
+  input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:12px 16px;font-family:'Space Mono',monospace;font-size:13px;border-radius:6px;outline:none;transition:border 0.2s;}
+  input:focus{border-color:var(--accent);}
+  .btn{width:100%;padding:14px;background:var(--accent);color:#000;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;margin-top:8px;}
+  .btn:hover{box-shadow:0 6px 20px rgba(0,212,255,0.3);transform:translateY(-1px);}
+  .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+  .error-box{background:rgba(255,59,92,0.1);border:1px solid rgba(255,59,92,0.3);border-radius:6px;padding:12px 16px;font-family:'Space Mono',monospace;font-size:12px;color:var(--danger);margin-bottom:18px;display:none;}
+  .role-note{background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.15);border-radius:6px;padding:12px 16px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:20px;}
+  .role-note b{color:var(--accent);}
+  .divider{display:flex;align-items:center;gap:12px;margin:20px 0;}
+  .divider span{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+  .footer-link{text-align:center;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);}
+  .footer-link a{color:var(--accent);text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo"><span class="logo-dot"></span>SafeWatch</div>
+  <h2>Create Account</h2>
+  <p class="sub">Register to access SafeWatch</p>
+
+  <div class="error-box" id="errBox"></div>
+
+  <div class="field">
+    <label>FULL NAME</label>
+    <input type="text" id="name" placeholder="Your full name">
+  </div>
+  <div class="field">
+    <label>USERNAME</label>
+    <input type="text" id="username" placeholder="Choose a username (min 3 chars)">
+  </div>
+  <div class="field">
+    <label>PASSWORD</label>
+    <input type="password" id="password" placeholder="Choose a password (min 6 chars)" onkeydown="if(event.key==='Enter')doRegister()">
+  </div>
+
+  <button class="btn" id="regBtn" onclick="doRegister()">Create Account →</button>
+
+  <div class="divider"><span>OR</span></div>
+
+  <div class="footer-link">
+    Already have an account? <a href="/login">Sign in</a>
+  </div>
+</div>
+
+<script>
+async function doRegister() {
+  const btn = document.getElementById('regBtn');
+  const err = document.getElementById('errBox');
+  const name = document.getElementById('name').value.trim();
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  if (!name || !username || !password) { showErr('Please fill in all fields.'); return; }
+  btn.disabled=true; btn.textContent='Creating account...';
+  err.style.display='none';
+  try {
+    const r = await fetch('/register', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({name, username, password})
+    });
+    const d = await r.json();
+    if (d.success) { window.location.href='/'; }
+    else { showErr(d.error||'Registration failed.'); btn.disabled=false; btn.textContent='Create Account →'; }
+  } catch(e) {
+    showErr('Network error. Is the server running?');
+    btn.disabled=false; btn.textContent='Create Account →';
+  }
+}
+function showErr(msg) {
+  const e=document.getElementById('errBox'); e.textContent='⚠ '+msg; e.style.display='block';
+}
+</script>
+</body>
+</html>
