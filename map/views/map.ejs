@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bangalore Heatmap</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: sans-serif; }
+    #map { width: 100%; height: 100vh; }
+
+    /* Custom Card Styling for Map Popups */
+    .leaflet-popup-content-wrapper {
+        border-radius: 12px;
+        padding: 5px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .leaflet-popup-content {
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 10px;
+    }
+    .card-header {
+        font-weight: bold;
+        color: #ff4757;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 8px;
+        font-size: 16px;
+        display: block;
+    }
+    .card-time {
+        font-size: 11px;
+        color: #747d8c;
+        display: block;
+    }
+</style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <!-- Info Button (Top Right) -->
+<button id="infoBtn" style="position: fixed; top: 20px; right: 20px; z-index: 1000; width: 40px; height: 40px; border-radius: 50%; background: #2f3542; color: white; border: none; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-family: serif; font-size: 20px;">i</button>
+
+<!-- Floating Side Panel -->
+<div id="infoPanel" style="position: fixed; top: 0; right: -350px; width: 320px; height: 100%; background: white; z-index: 3000; box-shadow: -5px 0 15px rgba(0,0,0,0.1); transition: 0.3s; padding: 20px; overflow-y: auto;">
+    <button id="closeInfo" style="background: none; border: none; font-size: 24px; cursor: pointer; float: right;">&times;</button>
+    
+    <h2 style="color: #ff4757; margin-bottom: 20px;">Safety Resources</h2>
+    
+    <div style="background: #f1f2f6; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <h4 style="margin-bottom: 5px;">NCW (National Commission for Women)</h4>
+        <p style="font-size: 13px;">Helpline: <b>7827170170</b></p>
+        <a href="http://www.ncw.nic.in" target="_blank" style="font-size: 12px; color: #3742fa;">Visit Website</a>
+    </div>
+
+    <div style="background: #f1f2f6; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <h4 style="margin-bottom: 5px;">Police Complaint (FIR)</h4>
+        <p style="font-size: 13px;">1. Dial <b>112</b> (Emergency)<br>2. Visit nearest station<br>3. Zero FIR can be filed in any station regardless of location.</p>
+    </div>
+
+    <div style="background: #f1f2f6; padding: 15px; border-radius: 8px;">
+        <h4 style="margin-bottom: 5px;">Mahila Sangha (Local)</h4>
+        <p style="font-size: 13px;">Bengaluru Support: <b>080-22212179</b></p>
+    </div>
+</div>
+
+  <button id="reportBtn" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; padding: 15px 30px; background: #ff4757; color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+      + Report a Complaint
+  </button>
+
+  <div id="formModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 320px;">
+    <form action="/report-incident" method="POST">
+        <h3 style="margin-bottom: 15px; color: #2f3542;">Submit Safety Report</h3>
+        
+        <label style="font-size: 12px; color: #747d8c;">INCIDENT TYPE</label>
+        <select name="incidentType" id="incidentType" required style="display:block; width:100%; margin-bottom:15px; padding: 10px; border: 1px solid #dfe4ea; border-radius: 5px;">
+            <option value="" disabled selected>Choose a category...</option>
+            <option value="Harassment">Harassment (High Risk)</option>
+            <option value="Theft">Theft/Robbery (High Risk)</option>
+            <option value="Poor Lighting">Poor Lighting (Infrastructure)</option>
+            <option value="Isolated Area">Isolated/Desolate Area</option>
+            <option value="Other">Other (Specify below)</option>
+        </select>
+
+        <div id="otherField" style="display: none;">
+            <input type="text" name="otherDetails" placeholder="Describe the issue..." style="display:block; width:100%; margin-bottom:15px; padding: 10px; border: 1px solid #dfe4ea; border-radius: 5px;">
+        </div>
+
+        <label style="font-size: 12px; color: #747d8c;">LOCATION COORDINATES</label>
+        <div style="display: flex; gap: 5px; margin-bottom: 20px;">
+            <input type="text" name="latitude" id="latInput" placeholder="Lat" readonly required style="width:50%; padding: 8px; background: #f1f2f6; border: 1px solid #dfe4ea; font-size: 11px;">
+            <input type="text" name="longitude" id="lngInput" placeholder="Lng" readonly required style="width:50%; padding: 8px; background: #f1f2f6; border: 1px solid #dfe4ea; font-size: 11px;">
+        </div>
+        
+        <button type="submit" style="width: 100%; background: #2ed573; color: white; border: none; padding: 12px; cursor: pointer; font-weight: bold; border-radius: 5px; margin-bottom: 8px;">Submit Report</button>
+        <button type="button" id="closeBtn" style="width: 100%; background: transparent; color: #a4b0be; border: none; cursor: pointer; font-size: 13px;">Cancel</button>
+    </form>
+</div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+  
+  <script>
+    // 1. INITIALIZE MAP
+    const map = L.map('map').setView([12.9716, 77.5946], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // 2. INITIALIZE CLUSTER GROUP
+    const markers = L.markerClusterGroup();
+
+    // 3. COLOR & STYLE LOGIC
+    function getCategoryStyle(category) {
+        if (!category) return '#ff4757';
+        const cat = category.toLowerCase();
+        
+        if (cat.includes('harassment') || cat.includes('theft')) {
+            return '#8B0000'; // Dark Red
+        } else if (cat.includes('light') || cat.includes('isolated')) {
+            return '#FFA500'; // Orange
+        }
+        return '#ff4757'; // Default Red
+    }
+
+    // 4. RENDER DATA WITH CARDS & CLUSTERS
+    const coords = <%- JSON.stringify(coords) %>;
+
+    coords.forEach(point => {
+        const pointColor = getCategoryStyle(point.label);
+        
+        // This HTML uses the CSS classes we added to the <style> section
+        const cardHtml = `
+            <div class="safety-card">
+                <span class="card-header">${point.label}</span>
+                <p style="margin: 5px 0; color: #2f3542;"><b>Coordinates:</b> ${point.lat.toFixed(4)}, ${point.lng.toFixed(4)}</p>
+                <span class="card-time">Live Safety Signal</span>
+            </div>
+        `;
+
+        const marker = L.circleMarker([point.lat, point.lng], {
+            radius: 12,
+            fillColor: pointColor,
+            color: "#fff",
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.9
+        }).bindPopup(cardHtml);
+
+        markers.addLayer(marker);
+    });
+
+    map.addLayer(markers);
+
+    // 5. MODAL & UI LOGIC
+    const btn = document.getElementById('reportBtn');
+    const modal = document.getElementById('formModal');
+    const close = document.getElementById('closeBtn');
+    const incidentSelect = document.getElementById('incidentType');
+    const otherField = document.getElementById('otherField');
+
+    btn.onclick = () => modal.style.display = 'block';
+    close.onclick = () => modal.style.display = 'none';
+
+    // Toggle "Other" field visibility
+    incidentSelect.addEventListener('change', function() {
+        otherField.style.display = (this.value === 'Other') ? 'block' : 'none';
+    });
+
+    // 6. CLICK MAP TO CAPTURE COORDINATES
+    let tempMarker;
+    map.on('click', function(e) {
+        modal.style.display = 'block';
+        document.getElementById('latInput').value = e.latlng.lat.toFixed(6);
+        document.getElementById('lngInput').value = e.latlng.lng.toFixed(6);
+
+        if (tempMarker) {
+            tempMarker.setLatLng(e.latlng);
+        } else {
+            tempMarker = L.marker(e.latlng, {draggable: true}).addTo(map);
+        }
+    });
+
+    const infoBtn = document.getElementById('infoBtn');
+    const infoPanel = document.getElementById('infoPanel');
+    const closeInfo = document.getElementById('closeInfo');
+
+    // Open Panel: Slide it into view
+    infoBtn.onclick = () => {
+        infoPanel.style.right = '0';
+    };
+
+    // Close Panel: Slide it back out of view
+    closeInfo.onclick = () => {
+        infoPanel.style.right = '-350px';
+    };
+</script>
+</body>
+</html>
